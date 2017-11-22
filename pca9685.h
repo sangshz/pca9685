@@ -33,8 +33,7 @@ class PCA9685
 		virtual ~PCA9685();
 		virtual void setPWMFreq(double freq);
 		virtual void setPWM(uint8_t num, uint16_t on, uint16_t off);
-		virtual void setPin(uint8_t num, uint16_t val, bool invert=false); //??
-		virtual void reset();//
+		virtual void reset();
 
 		virtual void setPulse(uint8_t num, double Pulse);
 		virtual void rot(uint8_t num,uint8_t angle);
@@ -102,42 +101,6 @@ void PCA9685::rot(uint8_t num,uint8_t angle)
 {
 	double pulse=0.5+angle/90.0;//pluse单位ms, 舵机脉宽500us~2500us对应角度0~180°
 	setPulse(num,pulse);
-};
-
-
-// Sets pin without having to deal with on/off tick placement and properly handles
-// a zero value as completely off.  Optional invert parameter supports inverting
-// the pulse for sinking to ground.  Val should be a value from 0 to 4095 inclusive.
-void PCA9685::setPin(uint8_t num, uint16_t val, bool invert)
-{
-	// Clamp value between 0 and 4095 inclusive.
-	val = min(val, 4095);
-	if (invert) {
-		if (val == 0) {
-			// Special value for signal fully on.
-			setPWM(num, 4096, 0);
-		}
-		else if (val == 4095) {
-			// Special value for signal fully off.
-			setPWM(num, 0, 4096);
-		}
-		else {
-			setPWM(num, 0, 4095-val);
-		}
-	}
-	else {
-		if (val == 4095) {
-			// Special value for signal fully on.
-			setPWM(num, 4096, 0);
-		}
-		else if (val == 0) {
-			// Special value for signal fully off.
-			setPWM(num, 0, 4096);
-		}
-		else {
-			setPWM(num, 0, val);
-		}
-	}
 };
 
 #endif
